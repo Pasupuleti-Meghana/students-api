@@ -1,3 +1,7 @@
 go mod init
 git ignore file created
 git init
+created config folder
+    created local.yaml file for configuration settings
+    created config.go file to read the above config path file and it's settings
+
