@@ -1,0 +1,31 @@
+what is configuration settings?
+
+what is DataBase Setup?
+
+what is meant by setup router?
+
+what is meant by setup server?
+
+Goroutine:
+A go routine is a light weight thread in go
+It allows a function to run concurrently.
+2 kb memory whereas thread occupies 1 MB memory
+So Go programs can run millions of goroutines.
+
+
+Channel:
+A channel is a mechanism that allows goroutines to communicate and synchronize safely.
+
+
+classic concurrency problem called a race condition - Multiple goroutines accessing the same data can cause race conditions.
+solution 1: Mutx(Lock) - We protect the shared variable
+solution 2: Using Channels go style - Go prefers communication instead of shared memory.
+Detect race condition by Run program with: go run -race main.go - WARNING: DATA 
+
+1860 2660 333
+
+Context:
+a signal that tells functions when to stop work
+
+Cancel:
+cancel is a function used to notify all operations using that context to stop immediately.

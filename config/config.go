@@ -1,5 +1,13 @@
 package config
 
+import (
+	"fmt"
+	"log"
+	"os"
+	"flag"
+	"github.com/ilyakaznacheev/cleanenv"
+)
+
 type HTTPServer struct {
 	Address string `yaml:"address" env-required:"true"`
 }
@@ -7,7 +15,7 @@ type HTTPServer struct {
 type Config struct {
 	Env string `yaml:"env" env-required:"true"`
 	StoragePath string `yaml:"storage_path" env-required:"true"`
-	HTTPServer 
+	HTTPServer HTTPServer `yaml:"http_server"`
 }
 
 func MustLoad() *Config {
@@ -27,7 +35,7 @@ func MustLoad() *Config {
 		}
 	}
 
-	if _, err := os.Stat(configpath) {
+	if _, err := os.Stat(configpath); err != nil{
 		log.Fatalf("config file does not exist: %s", configpath)
 	}
 
