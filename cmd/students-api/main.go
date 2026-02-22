@@ -2,6 +2,7 @@ package main
 
 import (
 	"Pasupuleti-Meghana/students-api/config"
+	"Pasupuleti-Meghana/students-api/internal/http/handlers/student"
 	"context"
 	"fmt"
 	"log/slog"
@@ -22,9 +23,7 @@ func main(){
 	router := http.NewServeMux()   //which function should handle which URL path. // create webserver, Handle requests from client, Send responses back
 	fmt.Printf("Starting server on port %s..\n",cfg.HTTPServer.Address)
 
-	router.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Welcome to the Student API"))
-	})
+	router.HandleFunc("POST /students", student.New())
 
 
 	//server setup
