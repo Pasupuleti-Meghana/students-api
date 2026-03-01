@@ -11,6 +11,9 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+	"Pasupuleti-Meghana/students-api/internal/storage/sqlite"
+	"log"
+	_"github.com/mattn/go-sqlite3"
 )
 
 func main(){
@@ -18,13 +21,19 @@ func main(){
 	cfg := config.MustLoad()
 
 	//database setup
+	storage, err := sqlite.New(cfg)
+	if err != nil {
+		log.Fatalf("failed to connect to the database: %s", err.Error())
+	}
+
+	slog.Info("Connected to the database successfully", slog.String("storage_path", cfg.StoragePath))
 
 	//router setup
 	router := http.NewServeMux()   //which function should handle which URL path. // create webserver, Handle requests from client, Send responses back
 	fmt.Printf("Starting server on port %s..\n",cfg.HTTPServer.Address)
 
-	router.HandleFunc("POST /students", student.New())
-
+	router.HandleFunc("POST /students", student.New(storage))
+	router.HandleFunc("GET /students/{id}", student.GetById(storage))
 
 	//server setup
 	//create the server instance

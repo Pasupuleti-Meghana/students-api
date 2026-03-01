@@ -6,6 +6,28 @@ what is meant by setup router?
 
 what is meant by setup server?
 
+what is dependency injection?
+
+what is the difference between concurrency and parallelism?
+
+When we will use different kinds of logs in go?
+
+The client sent i.e and http request contains:
+
+URL
+Method (GET/POST)
+Headers
+Body
+Query params
+Cookies
+Context
+
+The ResponseWriter contains:
+
+write body
+set status code
+set headers
+
 Goroutine:
 A go routine is a light weight thread in go
 It allows a function to run concurrently.
@@ -29,3 +51,7 @@ a signal that tells functions when to stop work
 
 Cancel:
 cancel is a function used to notify all operations using that context to stop immediately.
+
+Interfaces:
+we are using interfaces here for incase if we want to switch from the sqlite db to postgres with minimal changes
+

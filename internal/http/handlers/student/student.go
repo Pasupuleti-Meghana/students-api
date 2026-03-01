@@ -4,15 +4,23 @@ import (
 	"Pasupuleti-Meghana/students-api/internal/types"
 	"Pasupuleti-Meghana/students-api/internal/utils"
 	"encoding/json"
+	"strconv"
+
+	// "log"
+
 	// "errors"
 	// "io"
 	"log/slog"
 	"net/http"
+
 	// "fmt"
+	"Pasupuleti-Meghana/students-api/internal/storage"
+	"fmt"
+
 	"github.com/go-playground/validator/v10"
 )
-
-func New() http.HandlerFunc {
+   
+func New(storage storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		slog.Info("creating a student...")
@@ -40,11 +48,49 @@ func New() http.HandlerFunc {
 		// validate the request 
 
 		err = validator.New().Struct(student)
-		validationErrs := err.(validator.ValidationErrors)
-		response.WriteJsonResponse(w, http.StatusBadRequest,response.ValidationErrorResponse(validationErrs))
-		return 
+		if err != nil {
+			validationErrs := err.(validator.ValidationErrors)
+			response.WriteJsonResponse(w, http.StatusBadRequest,response.ValidationErrorResponse(validationErrs))
+			return
+		}
+ 
 
-		response.WriteJsonResponse(w, http.StatusOK, map[string]string{ "message": "Student created successfully"})
+		lastId, err := storage.CreateStudent(
+			student.Name,
+			student.Email,
+			student.Age,
+		)
 
+		if err != nil {
+			response.WriteJsonResponse(w, http.StatusInternalServerError, err.Error())
+		}
+
+		slog.Info("Student created succesfully..", slog.String("userId", fmt.Sprint(lastId)))
+
+		response.WriteJsonResponse(w, http.StatusOK, map[string]int64{ "id": lastId})
+
+	}
+}
+
+func GetById(storage storage.Storage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		id := r.PathValue("id")
+		slog.Info("getting a student",slog.String("id",id))
+
+		intId, err:= strconv.ParseInt(id, 10, 64)
+		if err != nil {
+			slog.Error("Erro in first err",err)
+			response.WriteJsonResponse(w, http.StatusBadRequest, response.GeneralErrorResponse(err))
+			return
+		}
+
+		student, err := storage.GetStudentById(intId)
+		if err != nil {
+			slog.Error("Error getting user",slog.String("id",id))
+			response.WriteJsonResponse(w, http.StatusInternalServerError, response.GeneralErrorResponse(err))
+			return
+		}
+
+		response.WriteJsonResponse(w, http.StatusOK, student)
 	}
 }
